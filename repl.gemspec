@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["matt knox"]
-  s.date = %q{2008-11-14}
+  s.date = %q{2008-11-16}
   s.description = %q{Repl makes it possible to change IRB's notion of self to be any object or class. }
   s.email = %q{matthewknox@gmail.com}
   s.homepage = %q{http://github.com/mattknox/repl}
