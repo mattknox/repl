@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mattknox/repl}
   s.require_paths = ["lib"]
   s.files = ["lib/repl.rb"]
-  s.executables = ["repl"]
   s.rubygems_version = %q{1.2.0}
   s.summary = %q{}
 
