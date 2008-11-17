@@ -1,14 +1,18 @@
-CONTEXT_STACK = []
+REPL_CONTEXT_STACK = []
 DEFAULT_STARTING_SELF = self
+REPL_LAST_UP = false
 
 module Repl
   def repl
+    REPL_LAST_UP = true
     DEFAULT_STARTING_SELF.cb self
-    CONTEXT_STACK.push(self)
+    REPL_CONTEXT_STACK.push(self)
   end
   
   def stop_repl
-    DEFAULT_STARTING_SELF.cb CONTEXT_STACK.pop
+    REPL_CONTEXT_STACK.pop if REPL_LAST_UP
+    REPL_LAST_UP = false
+    DEFAULT_STARTING_SELF.cb ( REPL_CONTEXT_STACK.empty? ? DEFAULT_STARTING_SELF : REPL_CONTEXT_STACK.pop )
   end
 end
 
