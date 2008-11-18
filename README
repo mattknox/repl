@@ -1,7 +1,108 @@
 repl
 ====
 
-Description goes here.
+a repl (Read Eval Print Loop) is an extremely powerful exploration and debugging tool.  I have often wished, while in the irb console, that I could evaluate some code in the context of some object.  This can be done with the irb method cb (change binding, I assume), like so:
+
+bash-3.2$ irb
+>> self
+=> main
+>> class Foo
+>>      @@hidden = "I'm hidden"
+>>    end
+=> "I'm hidden"
+>> cb Foo
+=> Foo
+>> self
+=> Foo
+>> @@hidden
+=> "I'm hidden"
+
+
+The problem is that unless you remembered to stash the old self somewhere that would be visible from the place you cb'd to, you couldn't get back where you came from, and you'd have to restart irb.  Also, it feels very un-OO to be doing these global calls to cb.  This is just enough friction that I never used cb much.  However, with 24 lines of wrapping, both of these issues are resolved.
+
+repl defines 2 modules, one for mixing into the target object, and another for doing the mixing.  Here's an example session:
+
+bash-3.2$ irb
+>> require "repl"
+=> true
+>> class Foo
+>>   @@hidden = "I'm a hidden class variable"
+>> end
+=> "I'm a hidden class variable"
+>> self
+=> main
+>> Foo.respond_to?("repl")
+=> false
+>> f = Foo.new
+=> #<Foo:0x643e8>
+>> f.respond_to?("repl")
+=> false
+
+Everything is normal up until this point.
+
+>> HookRepl.replize_object(Foo, :class)
+=> nil
+>> f.respond_to?("repl")
+=> false
+>>  Foo.respond_to?("repl")
+=> true
+>> self
+=> main
+
+self is unchanged, but now Foo has been extended with a class method "repl".
+
+>> Foo.repl
+=> [main, Foo]
+>> self
+=> Foo
+>> @@hidden
+=> "I'm a hidden class variable"
+
+As expected, we can now see inside the class, and poke about in it.
+
+>> def bar
+>>   "defined from repl"
+>> end
+=> nil
+
+We can also define methods inside the class, somewhat more conveniently than with class_eval.
+
+>> f      
+NameError: undefined local variable or method `f' for Foo:Class
+        from (irb):20
+
+note that f is not bound here.  Now let's get back into our old context.
+
+>> stop_repl
+=> main
+>> f  # I'm not sure why f isn't bound here either.  Maybe I have a bug?  dunno.
+NameError: undefined local variable or method `f' for main:Object
+        from (irb):22
+>> f = Foo.new
+=> #<Foo:0x46dfc>
+>> f.bar
+=> "defined from repl"
+
+and our changes are visible!  Now let's replize instances instead of classes.
+
+>> class Bar
+>> end
+=> nil
+>> HookRepl.replize_object(Bar, :object)
+=> #<Class:0x37988>::Bar
+>> Bar.respond_to?("repl")
+=> false
+>> Bar.new.respond_to?("repl")
+=> true
+
+By default, replize_object does both instances and classes.
+>> HookRepl.replize_object(Object)
+=> Object
+>> Bar.respond_to?("repl")
+=> true
+
+
+
 
 COPYRIGHT
 =========
