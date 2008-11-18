@@ -1,5 +1,5 @@
 DEFAULT_STARTING_SELF = self
-REPL_CONTEXT_STACK = [self]
+REPL_CONTEXT_STACK = [binding]
 
 module Repl
   def repl
