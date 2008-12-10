@@ -3,8 +3,8 @@ REPL_CONTEXT_STACK = [binding]
 
 module Repl
   def repl
-    DEFAULT_STARTING_SELF.cb self
-    REPL_CONTEXT_STACK.push(self)
+    DEFAULT_STARTING_SELF.cb binding
+    REPL_CONTEXT_STACK.push(binding)
   end
   
   def stop_repl
@@ -13,7 +13,7 @@ module Repl
   end
 end
 
-module HookRepl
+module HookRepl  # FIXME: not everything unterstands class_eval.  Maybe need an "eval in this thing method?"
   def self.replize_object(obj, class_or_instance_or_both = :both)
     obj.class_eval "extend Repl" if [:class, :both].member?(class_or_instance_or_both)
     obj.class_eval "include Repl" if [:object, :both].member?(class_or_instance_or_both)
