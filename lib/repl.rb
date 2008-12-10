@@ -8,7 +8,7 @@ module Repl
   end
   
   def stop_repl
-    REPL_CONTEXT_STACK.pop if (self == REPL_CONTEXT_STACK.last)
+    REPL_CONTEXT_STACK.pop if (binding == REPL_CONTEXT_STACK.last)
     DEFAULT_STARTING_SELF.cb( REPL_CONTEXT_STACK.empty? ? DEFAULT_STARTING_SELF : REPL_CONTEXT_STACK.pop )
   end
 end
