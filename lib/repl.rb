@@ -15,12 +15,9 @@ module Repl
 end
 
 module HookRepl  # FIXME: not everything unterstands class_eval.  Maybe need an "'eval in this thing' method?"
-  def self.init(binding)
-    DEFAULT_STARTING_BINDING.push(binding)
-    REPL_CONTEXT_STACK.push([binding, self])
-  end
-  
   def self.replize_object(obj, class_or_instance_or_both = :both)
+    DEFAULT_STARTING_BINDING.push(binding) if DEFAULT_STARTING_BINDING.empty?
+    REPL_CONTEXT_STACK.push([binding, self]) if REPL_CONTEXT_STACK.empty?
     obj.class_eval "extend Repl" if [:class, :both].member?(class_or_instance_or_both)
     obj.class_eval "include Repl" if [:object, :both].member?(class_or_instance_or_both)
   end
