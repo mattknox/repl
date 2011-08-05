@@ -7,8 +7,8 @@ bash-3.2$ irb
 >> self
 => main
 >> class Foo
->>      @@hidden = "I'm hidden"
->>    end
+>>   @@hidden = "I'm hidden"
+>> end
 => "I'm hidden"
 >> cb Foo
 => Foo
@@ -67,7 +67,7 @@ As expected, we can now see inside the class, and poke about in it.
 
 We can also define methods inside the class, somewhat more conveniently than with class_eval.
 
->> f      
+>> f
 NameError: undefined local variable or method `f' for Foo:Class
         from (irb):20
 
